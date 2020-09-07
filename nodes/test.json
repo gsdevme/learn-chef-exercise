@@ -1,0 +1,8 @@
+{
+  "name": "test",
+  "json_class": "Chef::Node",
+  "chef_type": "node",
+  "run_list": [
+    "role[webserver]"
+  ]
+}

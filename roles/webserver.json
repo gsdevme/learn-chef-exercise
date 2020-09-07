@@ -1,0 +1,26 @@
+{
+  "name": "webserver",
+  "description": "",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+    "firewall": {
+      "allow_ssh": true,
+      "rules": {
+          "http": {
+            "port": 80,
+            "protocol": "tcp",
+            "command": "allow"
+          }
+        }
+      }
+  },
+  "override_attributes": {
+
+  },
+  "chef_type": "role",
+  "run_list": [
+  	"recipe[chef_nginx::default]",
+    "recipe[firewall::default]",
+    "recipe[firewall_rules::default]"
+  ]
+}
