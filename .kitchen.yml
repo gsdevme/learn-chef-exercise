@@ -1,0 +1,34 @@
+---
+driver:
+    name: docker
+    privileged: true
+    use_sudo: false
+
+platforms:
+    - name: centos-7
+      driver_config:
+          image: centos/systemd
+          deprecations_as_errors: true
+          run_command: /usr/sbin/init
+          # Update all the things and ensure SSH is running
+          provision_command:
+              - sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+              - systemctl enable sshd.service
+              - yum update -y
+              - yum install ca-certificates yum openssl net-tools -y
+              - curl -LO https://omnitruck.chef.io/install.sh && sudo bash ./install.sh -v 14 && rm install.sh
+
+provisioner:
+    name: chef_solo
+    chef_license: accept-no-persist
+
+verifier:
+    name: inspec
+
+suites:
+    - name: webserver
+      run_list:
+          - role[webserver]
+      verifier:
+          inspec_tests:
+            - tests/webserver.rb
